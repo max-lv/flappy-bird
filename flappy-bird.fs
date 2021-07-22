@@ -791,12 +791,22 @@ CREATE wall-ys 4 allot
 
 
 : int-handler-fs
-  rLYC c@ 132 = if
+  \ prevent scrolling for everything from 134 to 144 and 0 to 48
+  \ i.e Don't scroll FLAPPY BIRD logo :P
+  rLYC c@ 134 = if
     0 rSCX !
     48 rLYC c!
   else
-    rSCXbuf @ rSCX !
-    132 rLYC c!
+    \ smoothly scroll stripped road (you cannot properly tile it since pattern is 7 tiles long)
+    \ 123 was choosen, because there is a white line which perfectly hides tearing B)
+    rLYC c@ 123 = if
+      rSCXbuf @ 56 mod rSCX !
+      134 rLYC c!
+    \ Scroll screen normally
+    else
+      rSCXbuf @ rSCX !
+      123 rLYC c!
+    then
   then
   enable-interrupts
   ;
