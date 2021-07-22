@@ -353,29 +353,16 @@ CREATE wall-ys 4 allot
 
 : wait-or-skip ( n -- )
   \ input: number of frames to wait for
-  time 0 c!
-  begin
-    dup \ dup input
-    time c@ 1+ time c!
-    lcd-wait-vblank
+  0 do
+    lcd-wait-vblank \ wait for 1 frame
     key-state if
-      drop
-      exit
+      leave
     then
-  time c@ = until
-  \ drop input
-  drop ;
+  loop ;
 
 : wait-unskipable ( n -- )
   \ input: number of frames to wait for
-  time 0 c!
-  begin
-    dup \ dup input
-    time c@ 1 + time c!
-    lcd-wait-vblank
-  time c@ = until
-  \ drop input
-  drop ;
+  0 do lcd-wait-vblank loop ;
 
 : draw-pipe-top-cap
   44 cursor-addr v!
@@ -759,7 +746,7 @@ CREATE wall-ys 4 allot
   WALL-NUM 0 do
     generate-wall wall-ys I + c!
   loop
-  \ [1] I'm not sure 2 is the right number (this replace `I 1 > if` in above version)
+  \ [1] I'm not sure 2 is the right number (this replaces `I 1 > if` in above version)
   WALL-NUM 2 do
     wall-ys I + c@
     I WALL-DISTANCE * 8 + draw-pipe
@@ -781,7 +768,7 @@ CREATE wall-ys 4 allot
 
 : init-credits2 ( - )
   18 0 do
-    I 6 mod 0 = if
+    I 3 mod 0 = if
       lcd-wait-vblank
     then
 
@@ -1000,14 +987,10 @@ $c3 $0048 c!
   lcd-wait-vblank
   init-credits2
 
-  \ 5 wait-unskipable
-
   fade-in-loop
   180 wait-or-skip
   fade-out-loop
 
-  \ wait on white screen
-  10 wait-unskipable
   install-flappy-bird-tileset
 
   reset-game
