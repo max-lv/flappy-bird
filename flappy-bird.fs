@@ -19,7 +19,7 @@ require save.fs
 \ + flap animation
 \ + death animation (faceplant bird)
 \ - draw backround as it scrolls (or change tiles so they tile `mod 32`
-\   - I feel I dont fit into vblank :(
+\   - I feel I wont fit into vblank :(
 \ + BUG: if you hit the pipe just right you will get 60 points while falling during gameover
 \   = fixed this by checking if player dead or not before increasing score
 
@@ -39,6 +39,16 @@ require save.fs
 
   depth 0 do
     31 I - pick
+    [target] c, [host]
+  loop
+  depth 0 do
+    drop
+  loop ;
+
+\ one screen row, takes 20 tiles
+: <-row20
+  depth 0 do
+    19 I - pick
     [target] c, [host]
   loop
   depth 0 do
@@ -71,24 +81,49 @@ create background-map
 23 24 25 26 27  28 29 23 24 25  26 27 28 29 23  24 25 26 27 28  29 23 24 25  26 27 28 29 23  24 25 26 <-row
  1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1   1  1  1  1  1   1  1  1 <-row
 
-\  1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1  1 <-row
-\  1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1  1 <-row
-\  1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1  1 <-row
-\  1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1  1 <-row
-\  1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1  1 <-row
-\  1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1  1 <-row
-\  1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1  1 <-row
-\  1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1  1 <-row
-\  1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1  1 <-row
-\  4  5  6  1 10  11 12 14 15 16  17 18 19 20 21   4  5  6  1 10 <-row
-\  0  0  7  8  9   0 13  0  0  0   0  0  0  0 22   0  0  7  8  9 <-row
-\  0 30 31  0  0  30 31  0  0 30  31  0  0 30 31   0  0 30 31  0 <-row
-\ 32 33 34 35 32  33 34 35 32 33  34 35 32 33 34  35 32 33 34 35 <-row
-\ 36 37 38 39 36  37 38 39 36 37  38 39 36 37 38  39 36 37 38 39 <-row
-\ 40 41 42 43 40  41 42 43 40 41  42 43 40 41 42  43 40 41 42 43 <-row
-\  2  2  2  2  2   2  2  2  2  2   2  2  2  2  2   2  2  2  2  2 <-row
-\ 23 24 25 26 27  28 29 23 24 25  26 27 28 29 23  24 25 26 27 28 <-row
-\  1  1  1  1  1   1  1  1  1  1   1  1  1  1  1   1  1  1  1  1 <-row
+
+create credits1-map
+
+  0   0   0   0   0      0   0   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
+  0   0   0   0   0      0   0   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
+  0   0   0 190   0    168   0 168   0   0    195   0 197   0   0      0   0   0   0   0  <-row20
+  0   0   0 191 174    169 192 169 194 175    196   0 198 175 199    200   0   0   0   0  <-row20
+  0   0   0 201   0      0 193   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
+  0   0   0 202 203    205   0   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
+  0   0   0   0 204      0   0   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
+  0   0   0   0  10     15  19  24  28  31     15  19  40  28  46     15  51  54   0   0  <-row20
+  0   0   0   0  11     16  20  25  29  32     36  21  25  43  47     36  52  55   0   0  <-row20
+  0   0   4   7  12     17  21  25  30  33     37  21  25  44  48     50  53  56   0   0  <-row20
+  0   0   5   8  13     18  22  26  21  34     38  39  41  45  49     21  22  56   0   0  <-row20
+  0   0   6   9  14      9  23  27   9  35      9   9  42   9  35      9  23  57   0   0  <-row20
+  0   0   0   0   0      0   0   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
+  0   0   0   0   0      0   0   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
+  0   0   0   0   0      0   0   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
+  0   0   0   0   0      0   0   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
+  0   0   0   0   0      0   0   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
+  0   0   0   0   0      0   0   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
+
+
+create credits2-map
+
+  1   1   1   1   1      1   1   1   1   1      1   1   1   1   1      1   1   1   1   1  <-row20
+  1   1   1   1   1      1   1   1   1   1      1   1   1   1   1      1   1   1   1   1  <-row20
+  1   1   1 141   1      1 145 145 147   1    147   1 149   1 139      1   1 154   1   1  <-row20
+  1   1   1 142 151    152 146 146 148 144    148 143 150   1 140    152 153 155   1   1  <-row20
+  1   1   1 137   1      1   1   1   1   1      1   1   1   1   1      1   1   1   1   1  <-row20
+  1   1   1 138 156    136   1   1   1   1      1   1   1   1   1      1   1   1   1   1  <-row20
+  1   1   1   1 157      1   1   1   1   1      1   1   1   1   1      1   1   1   1   1  <-row20
+  0   0   0   0 168    171   0   0 171   0      0   0   0   0   0      0   0   0   0   0  <-row20
+  0   0   0   0 169    172 170 176 172 173    174 174 175   0   0      0   0   0   0   0  <-row20
+  0   0   0   0   0      0   0   0 177 168    171   0 181   0 168      0 187   0   0   0  <-row20
+  0   0   0   0   0      0   0   0 178 169    172 180 182 183 169    184 188   0   0   0  <-row20
+  0   0   0   0   0      0   0   0 179   0      0   0   0   0   0      0 189   0   0   0  <-row20
+  0   0   0   0 171      0   0   0   0 158    160 162 164 166   0      0   0   0   0   0  <-row20
+  0   0   0   0 172    173 174 174 175 159    161 163 165 167   0      0   0   0   0   0  <-row20
+  0   0   0   0   0      0   0   0 177 185    168   0   0   0   0    185 187   0   0   0  <-row20
+  0   0   0   0   0      0   0   0 178 186    169 170 180 184 174    186 188   0   0   0  <-row20
+  0   0   0   0   0      0   0   0 179   0      0   0   0   0   0      0 189   0   0   0  <-row20
+  0   0   0   0   0      0   0   0   0   0      0   0   0   0   0      0   0   0   0   0  <-row20
 
 RAM
 
@@ -259,6 +294,54 @@ CREATE wall-ys 4 allot
     player-anim-flap0
   then ;
 
+: animate-fade ( n -- )
+    case
+      0 of %00000000 %00000000 endof
+      1 of %01000000 %01000010 endof
+      2 of %10010000 %10000010 endof
+      3 of %11100100 %11000110 endof
+    endcase
+    rOBP0 c!
+    rBGP c!
+    ;
+
+: set-fully-fade-in-palettes
+    %11000110 rOBP0 c!
+    %11100100 rBGP c! ;
+
+: fade-in ( -- )
+  time c@ 20 mod 0 =
+  anim-fade-state c@ 3 <
+  and if
+    anim-fade-state c@ 1 + anim-fade-state c!
+  then
+  anim-fade-state c@
+  lcd-wait-vblank
+  animate-fade ;
+
+: fade-out ( n -- )
+  \ <fade out speed in frames> fade-out
+  time c@ swap mod 0 =
+  anim-fade-state c@ 0 >
+  and if
+    anim-fade-state c@ 1 - anim-fade-state c!
+  then
+  anim-fade-state c@
+  lcd-wait-vblank
+  animate-fade ;
+
+: fade-in-loop ( -- )
+  begin
+    time c@ 1+ time c!
+    fade-in
+  anim-fade-state c@ 3 = until ;
+
+: fade-out-loop ( -- )
+  begin
+    time c@ 1+ time c!
+    12 fade-out
+  anim-fade-state c@ 0 = until ;
+
 : draw-pipe-top ( height -- )
   0 do
     47 cursor-addr v!
@@ -267,6 +350,32 @@ CREATE wall-ys 4 allot
     1 cursor-y +!
     -1 cursor-x +!
   loop ;
+
+: wait-or-skip ( n -- )
+  \ input: number of frames to wait for
+  time 0 c!
+  begin
+    dup \ dup input
+    time c@ 1+ time c!
+    lcd-wait-vblank
+    key-state if
+      drop
+      exit
+    then
+  time c@ = until
+  \ drop input
+  drop ;
+
+: wait-unskipable ( n -- )
+  \ input: number of frames to wait for
+  time 0 c!
+  begin
+    dup \ dup input
+    time c@ 1 + time c!
+    lcd-wait-vblank
+  time c@ = until
+  \ drop input
+  drop ;
 
 : draw-pipe-top-cap
   44 cursor-addr v!
@@ -424,6 +533,7 @@ CREATE wall-ys 4 allot
   is-even-frame c@ true xor is-even-frame c!
 
   is-game-over c@ if
+    \ keep player at floor level
     player-y c@ FLOOR-HEIGHT > if
       FLOOR-HEIGHT 3 - player-y c!
       500 ms
@@ -532,24 +642,7 @@ CREATE wall-ys 4 allot
   0 ;
 
 
-: animate-fade-in ( n -- )
-    case
-      0 of %00000000 %00000000 endof
-      1 of %01000000 %01000010 endof
-      2 of %10010000 %10000010 endof
-      3 of %11100100 %11000110 endof
-    endcase
-    rOBP0 c!
-    rBGP c!
-    ;
-
-
-: set-fully-fade-in-palettes
-    %11000110 rOBP0 c!
-    %11100100 rBGP c! ;
-
-
-: menu-loop ( - n )
+: menu-loop ( -- n )
   key-state k-start and if
     \ start game
     \ ----------
@@ -577,13 +670,7 @@ CREATE wall-ys 4 allot
 
   1 rSCXbuf +!
 
-  \ fade-in
-  time c@ 20 mod 0 = anim-fade-state c@ 3 < and if
-    anim-fade-state c@ 1 + anim-fade-state c!
-  then
-  anim-fade-state c@
-  lcd-wait-vblank
-  animate-fade-in
+  fade-in
 
   animate-flap
 
@@ -684,6 +771,22 @@ CREATE wall-ys 4 allot
   18 0 do
     0 I at-xy
     background-map I 32 * + 32 type
+  loop ;
+
+: init-credits1 ( - )
+  18 0 do
+    0 I at-xy
+    credits1-map I 20 * + 20 type
+  loop ;
+
+: init-credits2 ( - )
+  18 0 do
+    I 6 mod 0 = if
+      lcd-wait-vblank
+    then
+
+    0 I at-xy
+    credits2-map I 20 * + 20 type
   loop ;
 
 
@@ -848,47 +951,8 @@ $c3 $0048 c!
 ' int-handler-fs $0049 !
 
 
-: fade-in ( n -- )
-    lcd-wait-vblank
-    %00000000 rBGP c!
-    dup ms
-
-    lcd-wait-vblank
-    %01000000 rBGP c!
-    dup ms
-
-    lcd-wait-vblank
-    %10010000 rBGP c!
-    dup ms
-
-    lcd-wait-vblank
-    %11100100 rBGP c!
-    ms
-    ;
-
-
-: fade-out ( n -- )
-    lcd-wait-vblank
-    %11100100 rBGP c!
-    dup ms
-
-    lcd-wait-vblank
-    %10010000 rBGP c!
-    dup ms
-
-    lcd-wait-vblank
-    %01000000 rBGP c!
-    dup ms
-
-    lcd-wait-vblank
-    %00000000 rBGP c!
-    ms
-    ;
-
-
 : main
   install-flappy-bird-tileset
-  \ init-term
 
   disable-lcd
   \ set this only once
@@ -901,13 +965,48 @@ $c3 $0048 c!
   reset-game
   init-sfx
 
+  \ draw credits screen
+  \ -------------------
+  \ hide player
+  lcd-wait-vblank
+  0 0 0 move-sprite-i
+  0 0 1 move-sprite-i
+  0 0 2 move-sprite-i
+
+  disable-lcd
+  \ clear window
+  20 0 do
+    0 $9c00 I + c!
+  loop
+
+  init-credits1
+  install-dotgears-logo-tileset
+  enable-lcd
+
+  fade-in-loop
+  240 wait-or-skip
+  fade-out-loop
+
+  lcd-wait-vblank
+  init-credits2
+
+  \ 5 wait-unskipable
+
+  fade-in-loop
+  180 wait-or-skip
+  fade-out-loop
+
+  \ wait on white screen
+  10 wait-unskipable
+  install-flappy-bird-tileset
+
+  reset-game
+
   begin
-\ FIXME why this doesn't crash the game? Did I left something on the stack??
-\     drop
-\     drop
-\     drop
-\    \ drop \ super glitchy scrolling
-    \ 2050 fade-in
+    \ FIXME: why this doesn't crash the game? Did I left something on the stack??
+    \ drop
+    \ drop \ super glitchy scrolling
+
     begin menu-loop 1 = until
 
     disable-lcd
@@ -928,7 +1027,8 @@ $c3 $0048 c!
       disable-external-ram
     then
 
-    2000 ms
+    fade-out-loop
+    500 ms
 
     reset-game
 
