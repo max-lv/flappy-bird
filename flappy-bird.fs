@@ -18,8 +18,7 @@ require save.fs
 \ + display score in-game via window-map
 \ + flap animation
 \ + death animation (faceplant bird)
-\ - draw backround as it scrolls (or change tiles so they tile `mod 32`
-\   - I feel I wont fit into vblank :(
+\ + draw backround as it scrolls (or change tiles so they tile `mod 32`
 \ + BUG: if you hit the pipe just right you will get 60 points while falling during gameover
 \   = fixed this by checking if player dead or not before increasing score
 
@@ -234,6 +233,8 @@ variable best-score
 variable score-win-offset
 variable is-game-over
 variable anim-fade-state
+variable new-record-anim
+variable new-record-anim-state
 CREATE rSCXbuf 1 cells allot
 
 CREATE wall-ys 4 allot
@@ -629,6 +630,25 @@ CREATE wall-ys 4 allot
   0 ;
 
 
+: calc-new-record-y-position ( -- )
+  new-record-anim c@ 7 > if
+    new-record-anim-state c@ case
+      0 of 1 endof
+      1 of 2 endof
+      2 of 3 endof
+      3 of 0 endof
+    endcase
+    new-record-anim-state c!
+    0 new-record-anim c!
+  then
+
+  new-record-anim-state c@ case
+    0 of 51 51 endof
+    1 of 50 50 endof
+    2 of 51 51 endof
+    3 of 52 52 endof
+  endcase ;
+
 : menu-loop ( -- n )
   key-state k-start and if
     \ start game
@@ -650,19 +670,25 @@ CREATE wall-ys 4 allot
   then
 
   time c@ 1+ time c!
+  new-record-anim c@ 1+ new-record-anim c!
   is-even-frame c@ true xor is-even-frame c!
 
   \ OpTiMaZaTiOn
+  calc-new-record-y-position
   player-y c@ dup dup
 
   1 rSCXbuf +!
 
+  \ calls lcd-wait-vblank
   fade-in
 
   animate-flap
 
-  ( player-y ) move-player-sprites-y
+  ( player-y y y ) move-player-sprites-y
 
+  \ move new-record text
+  $fe0c c!
+  $fe10 c!
 
   \ put on 0 on stack, which means don't exit external game loop
   0 ;
@@ -683,6 +709,8 @@ CREATE wall-ys 4 allot
   0 score c!
   0 score-win-offset c!
   false is-game-over c!
+  0 new-record-anim c!
+  0 new-record-anim-state c!
   0 rSCXbuf !
 
   \ load save file
@@ -701,7 +729,17 @@ CREATE wall-ys 4 allot
   5 2 + wall1-y c! ;
 
 
-: setup-sprites ( - )
+: show-new-record-sprites ( -- )
+  %00000000 $fe0f c!
+  %00000000 $fe13 c! ;
+
+
+: hide-new-record-sprites ( -- )
+  %10000000 $fe0f c!
+  %10000000 $fe13 c! ;
+
+
+: setup-sprites ( -- )
   \ Set sprite palettes
 \  %11000110 $ff48 c!
 \  %00100111 $ff49 c!
@@ -711,6 +749,12 @@ CREATE wall-ys 4 allot
   56 %00000000 0 set-sprite
   58 %00000000 1 set-sprite
   60 %00000000 2 set-sprite
+
+  \ 'new' text, when new record is set
+  206 $fe0e c!
+  208 $fe12 c!
+   96 51 3 move-sprite-i
+  104 51 4 move-sprite-i
 
   player-x c@      player-y c@ 0 move-sprite-i
   player-x c@  8 + player-y c@ 1 move-sprite-i
@@ -980,20 +1024,23 @@ $c3 $0048 c!
   install-dotgears-logo-tileset
   enable-lcd
 
-  fade-in-loop
-  240 wait-or-skip
-  fade-out-loop
+\  fade-in-loop
+\  240 wait-or-skip
+\  fade-out-loop
 
   lcd-wait-vblank
   init-credits2
 
-  fade-in-loop
-  180 wait-or-skip
-  fade-out-loop
+\  fade-in-loop
+\  180 wait-or-skip
+\  fade-out-loop
 
   install-flappy-bird-tileset
 
   reset-game
+
+  lcd-wait-vblank
+  hide-new-record-sprites
 
   begin
     \ FIXME: why this doesn't crash the game? Did I left something on the stack??
@@ -1003,6 +1050,7 @@ $c3 $0048 c!
     begin menu-loop 1 = until
 
     disable-lcd
+    hide-new-record-sprites
     init-background
     IEF_LCDC rIE c@ xor rIE c!
     32 rSCX !
@@ -1013,15 +1061,18 @@ $c3 $0048 c!
 
     begin game-loop 1 = until
 
+    fade-out-loop
+    500 ms
+
     score c@ best-score c@ > if
       score c@ best-score c!
       enable-external-ram
       best-score c@ $a000 c!
       disable-external-ram
-    then
 
-    fade-out-loop
-    500 ms
+      lcd-wait-vblank
+      show-new-record-sprites
+    then
 
     reset-game
 
