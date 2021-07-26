@@ -730,13 +730,13 @@ CREATE wall-ys 4 allot
 
 
 : show-new-record-sprites ( -- )
-  %00000000 $fe0f c!
-  %00000000 $fe13 c! ;
+   96 $fe0d c!
+  104 $fe11 c! ;
 
 
 : hide-new-record-sprites ( -- )
-  %10000000 $fe0f c!
-  %10000000 $fe13 c! ;
+  0 $fe0d c!
+  0 $fe11 c! ;
 
 
 : setup-sprites ( -- )
@@ -751,10 +751,8 @@ CREATE wall-ys 4 allot
   60 %00000000 2 set-sprite
 
   \ 'new' text, when new record is set
-  206 $fe0e c!
-  208 $fe12 c!
-   96 51 3 move-sprite-i
-  104 51 4 move-sprite-i
+  206 %00000000 3 set-sprite
+  208 %00000000 4 set-sprite
 
   player-x c@      player-y c@ 0 move-sprite-i
   player-x c@  8 + player-y c@ 1 move-sprite-i
@@ -1021,26 +1019,23 @@ $c3 $0048 c!
   loop
 
   init-credits1
+  hide-new-record-sprites
   install-dotgears-logo-tileset
-  enable-lcd
 
-\  fade-in-loop
-\  240 wait-or-skip
-\  fade-out-loop
+  fade-in-loop
+  240 wait-or-skip
+  fade-out-loop
 
   lcd-wait-vblank
   init-credits2
 
-\  fade-in-loop
-\  180 wait-or-skip
-\  fade-out-loop
+  fade-in-loop
+  240 wait-or-skip
+  fade-out-loop
 
   install-flappy-bird-tileset
 
   reset-game
-
-  lcd-wait-vblank
-  hide-new-record-sprites
 
   begin
     \ FIXME: why this doesn't crash the game? Did I left something on the stack??
