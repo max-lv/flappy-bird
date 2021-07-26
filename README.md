@@ -16,7 +16,7 @@ Gameplay vise there is no medals.
 ## Features
 
 - Best score saving
-- Inconsistent physics (oops, sometimes vblank is called more then it should)
+- Inconsistent physics (oops, sometimes vblank is called more than it should)
 
 
 ## Instructions
