@@ -1,9 +1,9 @@
 
 GBFORTH_ROOT = "$(abspath $(shell pwd)/../gbforth)"
 
-%.gb: %.fs
+flappy-bird.gb: *.fs
 	GBFORTH_PATH=$(GBFORTH_ROOT)"/lib/" \
-	  $(GBFORTH_ROOT)/gbforth $<
+	  $(GBFORTH_ROOT)/gbforth flappy-bird.fs
 
 .PHONY: test
 test:
