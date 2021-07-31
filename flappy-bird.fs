@@ -990,10 +990,20 @@ $c3 $0048 c!
 ' int-handler-fs $0049 !
 
 
+: turn-off-unused-sprites ( -- )
+  \ Make sure LCD is off
+  40 0 do
+    0 0 I move-sprite-i
+    0 %00000000 I set-sprite
+  loop ;
+
+
 : main
   install-flappy-bird-tileset
 
   disable-lcd
+  turn-off-unused-sprites
+
   \ set this only once
   0 anim-fade-state c!
   $00 rBGP c!
