@@ -740,11 +740,6 @@ CREATE wall-ys 4 allot
 
 
 : setup-sprites ( -- )
-  \ Set sprite palettes
-\  %11000110 $ff48 c!
-\  %00100111 $ff49 c!
-  \      ^^ transparent
-
   \ Player
   56 %00000000 0 set-sprite
   58 %00000000 1 set-sprite
@@ -1009,8 +1004,7 @@ $c3 $0048 c!
   $00 rBGP c!
   %00000000 rOBP0 c!
   %11111111 rOBP1 c!
-\  %11000110 $ff48 c!
-\  %00100111 $ff49 c!
+
   reset-game
   init-sfx
 
